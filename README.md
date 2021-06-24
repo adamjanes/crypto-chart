@@ -1,70 +1,25 @@
-# Getting Started with Create React App
+### Crypto Chart Demo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This app demonstrates a nifty way to structure React applications working together with D3 code. 
 
-## Available Scripts
+For each D3 chart that we want to add to an application, we should create a new folder in the components directory (similar to /LineChart/). This folder should have an `index.js` file, and a D3 file. The `index.js` file looks like this:
 
-In the project directory, you can run:
+```jsx
+import React, { useMemo } from 'react'
+import Chart from './LineChart.d3'
+import ChartWrapper from '../ChartWrapper'
 
-### `yarn start`
+const LineChart = ({ data, setSelected }) => {
+  const initProps = useMemo(() => ({ data, setSelected }), [data, setSelected])
+  const updateProps = useMemo(() => ({ data }), [data])
+  const margin = useMemo(() => ({ BOTTOM: 50, LEFT: 50 }), [])
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  return (
+    <ChartWrapper Chart={Chart} initProps={initProps} updateProps={updateProps} margin={margin} />
+  )
+}
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+export default LineChart
+```
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+We are including the LineChart.d3 file, which exports an ES6 class with an `init()` and `update()` method. We're also including a ChartWrapper component, which abstracts away a lot of the logic that we'll need to write every time when writing a D3 file with React. We're also defining props to pass in to our chart when our chart firt initializes, and when it needs to update. We need to *memoize* these props, since otherwise, our ChartWrapper will be re-rendered every time something changes in the component above it (even if `data` and `setSelected` stay the same). This is because the freshly created object that we're passing to initProps/updateProps is treated as a changed prop, even though functionally the object is identical.

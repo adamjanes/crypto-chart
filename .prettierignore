@@ -1,0 +1,9 @@
+.crcf
+.next
+.storybook
+.vscode
+build
+coverage
+node_modules
+src/containers/Analysis/world.js
+public

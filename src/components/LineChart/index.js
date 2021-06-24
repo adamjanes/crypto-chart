@@ -1,19 +1,15 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core'
-
+import React, { useMemo } from 'react'
 import Chart from './LineChart.d3'
 import ChartWrapper from '../ChartWrapper'
 
-const useStyles = makeStyles({
-
-})
-
 const LineChart = ({ data, setSelected }) => {
-	const classes = useStyles()
+  const initProps = useMemo(() => ({ data, setSelected }), [data, setSelected])
+  const updateProps = useMemo(() => ({ data }), [data])
+  const margin = useMemo(() => ({ BOTTOM: 50, LEFT: 50 }), [])
 
-	return (
-		<ChartWrapper Chart={Chart} initProps={{data, setSelected }} updateProps={[data]} margin={{ BOTTOM: 50, LEFT: 50 }} />
-	)
+  return (
+    <ChartWrapper Chart={Chart} initProps={initProps} updateProps={updateProps} margin={margin} />
+  )
 }
 
 export default LineChart
